@@ -3,7 +3,29 @@ class node:
         self.value = value
         self.LeftChild = None
         self.RightChild = None
-        self.Parent = None          
+        self.Parent = None       
+
+    def hasLeftChild(self):
+        if self.LeftChild:
+            return True
+        return False   
+    def hasRightChild(self):
+        if self.RightChild:
+            return True
+        return False
+    
+    def getParent(self):
+        return self.Parent
+    
+    def getLeftChild(self):
+        if self.hasLeftChild:
+            return self.LeftChild
+        return False
+
+    def getRightChild(self):
+        if self.hasRightChild:
+            return self.RightChild
+        return False
 
 class BST:
     def __init__ (self):
@@ -85,13 +107,13 @@ class BST:
             return search_node        
         elif value <= search_node.value:
 ##            print("{} < {}".format(value, search_node.value))           
-            if self.HasChild(search_node, "LC"):
+            if search_node.hasLeftChild():              # self.HasChild(search_node, "LC"):
                 return self.Search(value, search_node.LeftChild)            
             else:
                 return False           
         elif value > search_node.value:
 ##            print("{} > {}".format(value, search_node.value))           
-            if self.HasChild(search_node, "RC"):
+            if search_node.hasRightChild():     # self.HasChild(search_node, "RC"):
                 return self.Search(value, search_node.RightChild)            
             else:
                 return False
@@ -113,11 +135,11 @@ class BST:
 ##        except NameError:
 ##            print("The Root Does Not Have A Right Child")
         print("Root: {}".format(self.root_node.value))
-        if self.HasChild(self.root_node, "LC"):
+        if self.root_node.hasLeftChild(): # self.HasChild(self.root_node, "LC"):
             print("Left Child: {}".format(self.root_node.LeftChild.value))
         else:
             print("No Left Child")
-        if self.HasChild(self.root_node, "RC"):
+        if self.root_node.hasRightChild(): # self.HasChild(self.root_node, "RC"):
             print("Right Child: {}".format(self.root_node.RightChild.value))
         else:
             print("No Right Child")
@@ -130,7 +152,7 @@ class BST:
         if glc == None:
             glc = self.root_node
         minimum = glc.value
-        if self.HasChild(glc, "LC"):
+        if glc.hasLeftChild(): # self.HasChild(glc, "LC"):
             return self.GetMin(glc.LeftChild)
         return  minimum
 
@@ -138,7 +160,7 @@ class BST:
         if grc == None:
             grc = self.root_node
         maximum = grc.value
-        if self.HasChild(grc, "RC"):
+        if grc.hasRightChild(): # self.HasChild(grc, "RC"):
             return self.GetMax(grc.RightChild)
         return maximum
 
@@ -158,8 +180,8 @@ class BST:
         """Removes the node with the given value"""
         TR = self.Search(value)
         #Childs
-        l = self.HasChild(TR, "LC")
-        r = self.HasChild(TR, "RC")
+        l = TR.hasLeftChild() #self.HasChild(TR, "LC")
+        r = TR.hasRightChild() #self.HasChild(TR, "RC")
         removed = False
         while not removed:
             #Case 0   Has No Child
@@ -198,7 +220,6 @@ class BST:
             #Case 3  Has Both The Childs
             if l and r:
                 RW = self.GetMinNode(TR.RightChild)
-                p = TR.Parent
                 lc = TR.LeftChild
                 rc = TR.RightChild
                 wctr = self.ParentsWhichChild(TR)
@@ -227,55 +248,60 @@ class BST:
 
     def PreOrderTraversal(self, node = None):       			# DLR
         if not node:
-			node = self.root_node
+            node = self.root_node
+        
         print(node.value)
 
-        if self.HasChild(node,"LC"):
-    	    self.PreOrderTraversal(node.LeftChild)
+        if node.hasLeftChild(): #self.HasChild(node,"LC"):
+            self.PreOrderTraversal(node.LeftChild)
+        
 
-    	if self.HasChild(node,"RC"):
+        if node.hasRightChild(): #self.HasChild(node,"RC"):
             self.PreOrderTraversal(node.RightChild)
 
     def InOrderTraversal(self, node = None): #LDR
     	if not node:
     		node = self.root_node
 
-    	if self.HasChild(node, "LC"):
+    	if node.hasLeftChild(): # self.HasChild(node, "LC"):
     		self.InOrderTraversal(node.LeftChild)
 
     	print(node.value)
 
-    	if self.HasChild(node, "RC"):
+    	if node.hasRightChild(): #self.HasChild(node, "RC"):
     		self.InOrderTraversal(node.RightChild)
 
 
-    def PostOrderTraversal(self):   #LRD
+    def PostOrderTraversal(self, node = None):   #LRD
         if not node:
-    		node = self.root_node
+    	    node = self.root_node
 
-    	if self.HasChild(node, "LC"):
-    		self.PostOrderTraversal(node.LeftChild)
+        if node.hasLeftChild(): #self.HasChild(node, "LC"):
+    	    self.PostOrderTraversal(node.LeftChild)
 
-    	if self.HasChild(node, "RC"):
-    		self.PostOrderTraversal(node.RightChild)
+        if node.hasRightChild(): #self.HasChild(node, "RC"):
+    	    self.PostOrderTraversal(node.RightChild)
 
-    	print(node.value)
+        print(node.value)
 
     def goLevelWise(self, node):
-    	if self.HasChild(node, "LC"):
-    		if self.HasChild(node, "RC"):
-    			self.levels.append((node.LeftChild.value, node.RightChild.value))
-    		else:
-    			self.levels.append((node.LeftChild.value, ))
-    		self.goLevelWise(node.LeftChild)
+        if node.hasLeftChild(): # self.HasChild(node, "LC"):
+            if node.hasRightChild():
+                self.levels.append((node.LeftChild.value, node.RightChild.value))
+            else:
+                self.levels.append((node.LeftChild.value, " "))
+            self.goLevelWise(node.LeftChild)
 
-    	else:
-    		self.levels.append((,node.RightChild.value))
-    		self.goLevelWise(node.RightChild)
+        elif node.hasRightChild():
+            self.levels.append((" ",node.RightChild.value))
+            self.goLevelWise(node.RightChild)
+
+        else:
+            self.levels.append((" ", " "))
 
     
     def Visualize(self):
-    	self.levels.append(self.root_node)
+    	self.levels.append(self.root_node.value)
     	self.goLevelWise(self.root_node)
     	s = " "
     	for level in self.levels:
@@ -283,19 +309,10 @@ class BST:
 
     def GetLevel(self):
         if len(self.levels) == 0:
-        	self.levels.append(self.root_node)
-    		self.goLevelWise(self.root_node)
-    		return len(self.levels)
-    	else:
-    		return len(self.levels)
+            self.levels.append(self.root_node)
+            self.goLevelWise(self.root_node)
+            return len(self.levels)
+        else:
+            return len(self.levels)
 
-
-    
-
-
-            
-        
-
-                    
-            
-        
+# t.Assign([12,24,8,36,18,10])
