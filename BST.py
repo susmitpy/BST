@@ -282,7 +282,14 @@ class BST:
     		print(level)
 
     def GetLevel(self):
-        pass
+        if len(self.levels) == 0:
+        	self.levels.append(self.root_node)
+    		self.goLevelWise(self.root_node)
+    		return len(self.levels)
+    	else:
+    		return len(self.levels)
+
+
     
 
 
