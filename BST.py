@@ -260,59 +260,67 @@ class BST:
             self.PreOrderTraversal(node.RightChild)
 
     def InOrderTraversal(self, node = None): #LDR
-    	if not node:
-    		node = self.root_node
+        if not node:
+            node = self.root_node
 
-    	if node.hasLeftChild(): # self.HasChild(node, "LC"):
-    		self.InOrderTraversal(node.LeftChild)
+        if node.hasLeftChild(): # self.HasChild(node, "LC"):
+            self.InOrderTraversal(node.LeftChild)
 
-    	print(node.value)
+        print(node.value)
 
-    	if node.hasRightChild(): #self.HasChild(node, "RC"):
-    		self.InOrderTraversal(node.RightChild)
+        if node.hasRightChild(): #self.HasChild(node, "RC"):
+            self.InOrderTraversal(node.RightChild)
 
 
     def PostOrderTraversal(self, node = None):   #LRD
         if not node:
-    	    node = self.root_node
+            node = self.root_node
 
         if node.hasLeftChild(): #self.HasChild(node, "LC"):
-    	    self.PostOrderTraversal(node.LeftChild)
+            self.PostOrderTraversal(node.LeftChild)
 
         if node.hasRightChild(): #self.HasChild(node, "RC"):
-    	    self.PostOrderTraversal(node.RightChild)
+            self.PostOrderTraversal(node.RightChild)
 
         print(node.value)
 
-    def goLevelWise(self, node):
-        if node.hasLeftChild(): # self.HasChild(node, "LC"):
-            if node.hasRightChild():
-                self.levels.append((node.LeftChild.value, node.RightChild.value))
-            else:
-                self.levels.append((node.LeftChild.value, " "))
-            self.goLevelWise(node.LeftChild)
+    def goLevelWise(self, node):  # BFS
+        has_left_child, has_right_child = 0, 0
 
-        elif node.hasRightChild():
-            self.levels.append((" ",node.RightChild.value))
-            self.goLevelWise(node.RightChild)
+        if not node:
+            node = self.root_node
+
+        if node.hasLeftChild():
+            self.levels.append(node.getLeftChild().value)
+            has_left_child = 1
 
         else:
-            self.levels.append((" ", " "))
+            self.levels.append(" ")
+
+        if node.hasRightChild():
+            self.levels.append(node.getRightChild().value)
+            has_right_child = 1
+
+        else:
+            self.levels.append(" ")
+
+        if has_left_child:
+            self.goLevelWise(node.getLeftChild())
+
+        if has_right_child:
+            self.goLevelWise(node.getRightChild())
+
 
     
     def Visualize(self):
-    	self.levels.append(self.root_node.value)
-    	self.goLevelWise(self.root_node)
-    	s = " "
-    	for level in self.levels:
-    		print(level)
+        self.levels.append(self.root_node.value)
+        self.goLevelWise(self.root_node)
+        s = " "
+
+        for level in self.levels:
+            print(level)
 
     def GetLevel(self):
-        if len(self.levels) == 0:
-            self.levels.append(self.root_node)
-            self.goLevelWise(self.root_node)
-            return len(self.levels)
-        else:
-            return len(self.levels)
+        pass
 
 # t.Assign([12,24,8,36,18,10])
